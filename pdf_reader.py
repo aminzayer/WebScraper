@@ -10,9 +10,11 @@ class PdfReader:
         try:
             with open(file_path, 'rb') as f:
                 pdf_reader = PdfFileReader(f)
-                text = ""
+                # Optimization: Use list accumulation and join for O(n) performance
+                # instead of string concatenation which is O(n^2)
+                pages = []
                 for page_num in range(pdf_reader.numPages):
-                    text += pdf_reader.getPage(page_num).extractText()
-                return text
+                    pages.append(pdf_reader.getPage(page_num).extractText())
+                return "".join(pages)
         except Exception as e:
             return f"Error reading PDF file {file_path}: {e}"
