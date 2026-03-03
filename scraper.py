@@ -11,11 +11,16 @@ from .pdf_reader import PdfReader
 class WebScraper:
     def __init__(self):
         self.errors = []
+        # Optimization: Use requests.Session() to enable HTTP Keep-Alive
+        # This reuses the underlying TCP connection across requests to the same host,
+        # which significantly reduces latency and overhead, especially when scraping
+        # multiple URLs from the same domain or in parallel execution.
+        self.session = requests.Session()
 
     def scrape_url(self, url: str) -> str:
         """Scrapes content from a given URL."""
         try:
-            response = requests.get(url)
+            response = self.session.get(url)
             response.raise_for_status()  # Handle HTTP errors
             return response.text
         except requests.RequestException as e:
